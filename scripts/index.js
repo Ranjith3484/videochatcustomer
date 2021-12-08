@@ -151,7 +151,7 @@ startChat();
   const createPeerConnection = () => {
   
     const pc = new RTCPeerConnection({
-      iceServers: [{ urls: 'stun:stun.m.test.com:19000' }],
+      iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
     });
 
     pc.onnegotiationneeded = async () => {
