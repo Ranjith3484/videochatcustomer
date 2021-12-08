@@ -105,7 +105,6 @@ function openCloseLoadingScreen() {
   }
 }
 
-let userMediaStream;
 
 //start video chat
 function goToVideoChat() {
@@ -135,7 +134,7 @@ function goToVideoChat() {
     try {
       userMediaStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
       
-      signaling = new WebSocket('wss://perfect-catfish-84.loca.lt');
+      signaling = new WebSocket('wss://videochat-app-bj.herokuapp.com');
       setTimeout(function(){peerConnection = createPeerConnection();
 
       addMessageHandler();
@@ -254,6 +253,14 @@ startChat();
     });
   }
 
+//change video to unknoen person
+  document
+
+  .getElementById("myVideo")
+
+  .addEventListener("click", function () {
+    videoChange(signaling);
+  });
   //webrtc ends here
 
 }
@@ -300,9 +307,17 @@ function audioChange() {
 }
 
 //video change
-function videoChange() {
+function videoChange(signaling) {
   const customerMediaStream = customerViewCustomerVideo.srcObject;
   const customerMediaTracks = customerMediaStream.getTracks();
+  
+  //send message to client
+  signaling.send(JSON.stringify({
+    message_type: 'CANDIDATE',
+    content: 'videoViewChange',
+  }));
+
+
   if (
     document.getElementById("myVideo").classList.contains("customerViewActive")
   ) {
