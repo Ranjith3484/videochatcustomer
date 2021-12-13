@@ -32,18 +32,18 @@
     -webkit-transform:rotateY(360deg);
     -moz-transform:rotateY(360deg); 
     margin-left: 82%;
-    margin-bottom: -50px;
+    margin-bottom: -70px;
   }
 
   .remoteAudioMutedIcon{
     color: black;
-    font-size: 25px;
+    font-size: 40px !important;
     display: none ;
 }
 
 .remoteAudioUnMutedIcon{
     color: black;
-    font-size: 25px;
+    font-size: 40px !important;
     display: block;
     animation: blink 2s ease-in infinite;
 }
