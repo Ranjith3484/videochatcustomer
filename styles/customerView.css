@@ -79,6 +79,19 @@
     width: 350px;
 }
 
+.top-right {
+    transform: rotateY(360deg);
+    -webkit-transform:rotateY(360deg);
+    -moz-transform:rotateY(360deg); 
+    /* margin-top: -200px;
+    margin-left: 250px; */
+  }
+
+.remoteAudioMuteIcon{
+    color: green;
+    font-size: 25px;
+}
+
 .overlayName{
     color:white;
     font-weight: bold;

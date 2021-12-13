@@ -286,15 +286,6 @@ function goToVideoChat() {
       content: offer,
     });
   };
-
-  //change video to unknoen person
-  document
-
-    .getElementById("myVideo")
-
-    .addEventListener("click", function () {
-      videoChange(signaling);
-    });
   //webrtc ends here
 }
 
@@ -305,13 +296,62 @@ function endVideoCall() {
   const customerMediaTracks = customerMediaStream.getTracks();
   //stop all tracks
   customerMediaTracks.forEach((track) => track.stop());
-  window.location.reload()
+  window.location.reload();
 }
+
+const CLIENT_ID = "LT31hadz55oFVVvT";
+
+const drone = new ScaleDrone(CLIENT_ID, {
+  data: {
+    name: "customer",
+  },
+});
+
+let members = [];
+
+drone.on("open", (error) => {
+  if (error) {
+    return console.error(error);
+  }
+  console.log("Successfully connected to Scaledrone");
+
+  const room = drone.subscribe("observable-room");
+  room.on("open", (error) => {
+    if (error) {
+      return console.error(error);
+    }
+    console.log("Successfully joined room");
+  });
+
+  room.on("data", (text, member) => {
+    console.log(text, "received message from " + member.clientData.name);
+    if (member.clientData.name === "CSR") {
+     if (text === "audioMuted") {
+        //check for audio change
+        document.getElementsByClassName("remoteAudioMuteIcon")[0].style.color =
+          "red";
+      } else if (text === "audioUnMuted") {
+        //check for audio change
+        document.getElementsByClassName("remoteAudioMuteIcon")[0].style.color =
+          "green";
+      }
+    }
+  });
+});
+
+drone.on("close", (event) => {
+  console.log("Connection was closed", event);
+});
+
+drone.on("error", (error) => {
+  console.error(error);
+});
 
 // audio change
 function audioChange() {
   const customerMediaStream = customerViewCustomerVideo.srcObject;
   const customerMediaTracks = customerMediaStream.getTracks();
+
   if (
     document.getElementById("myMic").classList.contains("customerViewActive")
   ) {
@@ -319,6 +359,11 @@ function audioChange() {
     document.getElementById("myMic").classList.add("customerViewInactive");
     document.getElementById("myMic").classList.add("crossLine");
     document.getElementById("myMic").classList.remove("customerViewActive");
+    //send message via drone for audio muted
+    drone.publish({
+      room: "observable-room",
+      message: "audioMuted",
+    });
     //remove audio track
     customerMediaTracks.forEach(function (device) {
       if (device.kind === "audio") {
@@ -331,6 +376,11 @@ function audioChange() {
     document.getElementById("myMic").classList.add("customerViewActive");
     document.getElementById("myMic").classList.remove("customerViewInactive");
     document.getElementById("myMic").classList.remove("crossLine");
+    //send message via drone for audio un muted
+    drone.publish({
+      room: "observable-room",
+      message: "audioUnMuted",
+    });
     //add audio track
     customerMediaTracks.forEach(function (device) {
       if (device.kind === "audio") {
@@ -342,18 +392,14 @@ function audioChange() {
 }
 
 //video change
-function videoChange(signaling) {
+function videoChange() {
   const customerMediaStream = customerViewCustomerVideo.srcObject;
   const customerMediaTracks = customerMediaStream.getTracks();
-
-  //send message to client
-  signaling.send(
-    JSON.stringify({
-      message_type: "CANDIDATE",
-      content: "videoViewChange",
-    })
-  );
-
+  //send message via drone for video mute/unmute
+  drone.publish({
+    room: "observable-room",
+    message: "videoViewChange",
+  });
   if (
     document.getElementById("myVideo").classList.contains("customerViewActive")
   ) {

@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="./styles/index.css">
   <link rel="stylesheet" href="./styles/customerView.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script type='text/javascript' src='https://cdn.scaledrone.com/scaledrone.min.js'></script>
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
 
@@ -167,6 +168,9 @@
     <div class="customerViewRow">
       <!-- remote view -->
       <div class="customerViewColumnLarge">
+        <div class="top-right">
+          <i class="fa fa-microphone remoteAudioMuteIcon" ></i>
+        </div>
         <div class="customerViewClientContainer">
           <video autoplay="true" id="customerViewClientVideoElement"></video>
         </div>
@@ -175,7 +179,7 @@
         <div class="customerViewIconCircle customerViewActive" id="myMic" onclick="audioChange()">
           <i class="fa fa-microphone customerViewIcon"></i>
         </div>
-        <div class="customerViewIconCircle customerViewActive" id="myVideo" >
+        <div class="customerViewIconCircle customerViewActive" id="myVideo" onclick="videoChange()">
           <i class="fa fa-video-camera customerViewIcon"></i>
         </div>
         <div class="customerViewIconCircle customerViewInactive" id="endVideoCall" onclick="endVideoCall()">
