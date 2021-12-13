@@ -165,12 +165,15 @@
   <!-- customer view video call -->
   <div class="customerViewContainer hideElement" id="customerViewContainer">
     <img src="./assets/verizon-logo.png" class="customerViewLogoImage hideInMobile" />
-    <div class="customerViewRow">
+    <div class="customerViewRow">     
+
       <!-- remote view -->
       <div class="customerViewColumnLarge">
-        <div class="top-right">
-          <i class="fa fa-microphone remoteAudioMuteIcon" ></i>
-        </div>
+                   <!-- remote audio status icon -->
+      <div class="top-right">
+        <i class="fa fa-microphone remoteAudioUnMutedIcon" ></i>
+        <i class="fa fa-microphone-slash remoteAudioMutedIcon" style="display: none;"></i>
+      </div>
         <div class="customerViewClientContainer">
           <video autoplay="true" id="customerViewClientVideoElement"></video>
         </div>

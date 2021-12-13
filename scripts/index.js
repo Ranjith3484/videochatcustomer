@@ -99,10 +99,6 @@ function openCloseLoadingScreen() {
       .classList.remove("hideElement");
     document.getElementsByClassName("loadingContainer")[0].style.display =
       "flex";
-    //close the loading screen after some seconds and open video chat
-    // setTimeout(function () {
-    //   goToVideoChat();
-    // }, 5000);
     goToVideoChat();
   } else {
     document.getElementById("openLoadingScreen").classList.add("hideElement");
@@ -326,14 +322,14 @@ drone.on("open", (error) => {
   room.on("data", (text, member) => {
     console.log(text, "received message from " + member.clientData.name);
     if (member.clientData.name === "CSR") {
-     if (text === "audioMuted") {
-        //check for audio change
-        document.getElementsByClassName("remoteAudioMuteIcon")[0].style.color =
-          "red";
+      if (text === "audioMuted") {
+        console.log('muted')
+        document.getElementsByClassName("remoteAudioMutedIcon")[0].style.display = "block";
+        document.getElementsByClassName("remoteAudioUnMutedIcon")[0].style.display = "none";
       } else if (text === "audioUnMuted") {
-        //check for audio change
-        document.getElementsByClassName("remoteAudioMuteIcon")[0].style.color =
-          "green";
+        console.log('un muted')
+        document.getElementsByClassName("remoteAudioMutedIcon")[0].style.display = "none";
+        document.getElementsByClassName("remoteAudioUnMutedIcon")[0].style.display = "block";
       }
     }
   });
