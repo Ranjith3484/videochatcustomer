@@ -328,9 +328,16 @@ input[type=number] {
       color:white;
       font-size: 40px;
       font-weight: 600;
-      margin-bottom: 80px !important;
+      margin-bottom: 20px !important;
       text-align: justify;
       font-family: verizonBoldFont;
+  }
+
+  .waitingHeader{
+    color:white;
+    margin-bottom: 60px !important;
+    text-align: center;
+    font-family: verizonFont;
   }
 
   span {
@@ -467,10 +474,18 @@ input[type=number] {
         color:white;
         font-size: 20px;
         font-weight: 600;
-        margin-bottom: 40px !important;
+        margin-bottom: 10px !important;
     text-align: justify;
     font-family: verizonBoldFont;
     }
+
+    .waitingHeader{
+      color:white;
+      margin-bottom: 30px !important;
+      text-align: center;
+      font-family: verizonFont;
+    }
+
     .loadingContainer {
         display: none;
         justify-content: center;
