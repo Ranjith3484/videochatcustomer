@@ -32,9 +32,13 @@ function myMap() {
 //open or close video call request form
 function openCloseVideoCallForm() {
   if (
-    document.getElementById("openVideoCallForm").classList.contains("hideElement")
+    document
+      .getElementById("openVideoCallForm")
+      .classList.contains("hideElement")
   ) {
-    document.getElementById("openVideoCallForm").classList.remove("hideElement");
+    document
+      .getElementById("openVideoCallForm")
+      .classList.remove("hideElement");
   } else {
     document.getElementById("openVideoCallForm").classList.add("hideElement");
   }
@@ -62,9 +66,8 @@ document.onkeydown = function (evt) {
 //block texts in input
 function onlyNumberKey(evt) {
   // Only ASCII character in that range allowed
-  var ASCIICode = (evt.which) ? evt.which : evt.keyCode
-  if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
-      return false;
+  var ASCIICode = evt.which ? evt.which : evt.keyCode;
+  if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57)) return false;
   return true;
 }
 
@@ -77,7 +80,7 @@ function submitForm(event) {
   console.log(name.value);
   console.log(number.value);
   console.log(reason.value);
-  localStorage.setItem("customerName",name.value);
+  localStorage.setItem("customerName", name.value);
   // close video call request screen
   openCloseVideoCallForm();
   //open loading screen
@@ -91,13 +94,16 @@ function openCloseLoadingScreen() {
       .getElementById("openLoadingScreen")
       .classList.contains("hideElement")
   ) {
-    document.getElementById("openLoadingScreen").classList.remove("hideElement");
+    document
+      .getElementById("openLoadingScreen")
+      .classList.remove("hideElement");
     document.getElementsByClassName("loadingContainer")[0].style.display =
       "flex";
     //close the loading screen after some seconds and open video chat
-    setTimeout(function () {
-      goToVideoChat();
-    }, 5000);
+    // setTimeout(function () {
+    //   goToVideoChat();
+    // }, 5000);
+    goToVideoChat();
   } else {
     document.getElementById("openLoadingScreen").classList.add("hideElement");
     document.getElementsByClassName("loadingContainer")[0].style.display =
@@ -105,23 +111,18 @@ function openCloseLoadingScreen() {
   }
 }
 
-
 //start video chat
 function goToVideoChat() {
-  //close the loading screen
-  openCloseLoadingScreen();
-  document.getElementById("customerViewContainer").classList.remove("hideElement");
-
   //webrtc starts here
   "use strict";
 
   const MESSAGE_TYPE = {
-    SDP: 'SDP',
-    CANDIDATE: 'CANDIDATE',
-  }
+    SDP: "SDP",
+    CANDIDATE: "CANDIDATE",
+  };
 
   const MAXIMUM_MESSAGE_SIZE = 65535;
-  const END_OF_FILE_MESSAGE = 'EOF';
+  const END_OF_FILE_MESSAGE = "EOF";
   let code = 123456789;
   let peerConnection;
   let signaling;
@@ -132,26 +133,36 @@ function goToVideoChat() {
 
   const startChat = async () => {
     try {
-      userMediaStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
-      
-      signaling = new WebSocket('wss://videochat-app-bj.herokuapp.com');
-      setTimeout(function(){peerConnection = createPeerConnection();
+      userMediaStream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: true,
+      });
 
-      addMessageHandler();
+      signaling = new WebSocket("wss://videochat-app-bj.herokuapp.com");
+      setTimeout(function () {
+        peerConnection = createPeerConnection();
 
-      userMediaStream.getTracks()
-        .forEach(track => senders.push(peerConnection.addTrack(track, userMediaStream)));
-      document.getElementById('customerViewCustomerVideoElement').srcObject = userMediaStream},10000)
+        addMessageHandler();
 
+        userMediaStream
+          .getTracks()
+          .forEach((track) =>
+            senders.push(peerConnection.addTrack(track, userMediaStream))
+          );
+        document.getElementById(
+          "customerViewCustomerVideoElement"
+        ).srcObject = userMediaStream;
+      }, 10000);
     } catch (err) {
       console.error(err);
     }
   };
-startChat();
+
+  startChat();
+
   const createPeerConnection = () => {
-  
     const pc = new RTCPeerConnection({
-      iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
+      iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
     });
 
     pc.onnegotiationneeded = async () => {
@@ -168,14 +179,14 @@ startChat();
     };
 
     pc.ontrack = (event) => {
-      const video = document.getElementById('customerViewClientVideoElement');
+      const video = document.getElementById("customerViewClientVideoElement");
       video.srcObject = event.streams[0];
       console.log("live streaming");
     };
 
     pc.ondatachannel = (event) => {
       const { channel } = event;
-      channel.binaryType = 'arraybuffer';
+      channel.binaryType = "arraybuffer";
 
       const receivedBuffers = [];
       channel.onmessage = async (event) => {
@@ -185,7 +196,9 @@ startChat();
             receivedBuffers.push(data);
           } else {
             const arrayBuffer = receivedBuffers.reduce((acc, arrayBuffer) => {
-              const tmp = new Uint8Array(acc.byteLength + arrayBuffer.byteLength);
+              const tmp = new Uint8Array(
+                acc.byteLength + arrayBuffer.byteLength
+              );
               tmp.set(new Uint8Array(acc), 0);
               tmp.set(new Uint8Array(arrayBuffer), acc.byteLength);
               return tmp;
@@ -195,9 +208,28 @@ startChat();
             channel.close();
           }
         } catch (err) {
-          console.log('File transfer failed');
+          console.log("File transfer failed");
         }
       };
+    };
+
+    pc.onconnectionstatechange = function (event) {
+      switch (pc.connectionState) {
+        case "connected":
+          //close the loading screen
+          openCloseLoadingScreen();
+          document
+            .getElementById("customerViewContainer")
+            .classList.remove("hideElement");
+          break;
+        case "disconnected":
+        case "failed":
+          endVideoCall();
+          break;
+        case "closed":
+          endVideoCall();
+          break;
+      }
     };
 
     return pc;
@@ -216,7 +248,7 @@ startChat();
         if (message_type === MESSAGE_TYPE.CANDIDATE && content) {
           await peerConnection.addIceCandidate(content);
         } else if (message_type === MESSAGE_TYPE.SDP) {
-          if (content.type === 'offer') {
+          if (content.type === "offer") {
             await peerConnection.setRemoteDescription(content);
             const answer = await peerConnection.createAnswer();
             await peerConnection.setLocalDescription(answer);
@@ -224,24 +256,26 @@ startChat();
               message_type: MESSAGE_TYPE.SDP,
               content: answer,
             });
-          } else if (content.type === 'answer') {
+          } else if (content.type === "answer") {
             await peerConnection.setRemoteDescription(content);
           } else {
-            console.log('Unsupported SDP type.');
+            console.log("Unsupported SDP type.");
           }
         }
       } catch (err) {
         console.error(err);
       }
-    }
-  }
+    };
+  };
 
   const sendMessage = (message) => {
-      signaling.send(JSON.stringify({
+    signaling.send(
+      JSON.stringify({
         ...message,
         code,
-      }));
-  }
+      })
+    );
+  };
 
   const createAndSendOffer = async () => {
     const offer = await peerConnection.createOffer();
@@ -251,20 +285,18 @@ startChat();
       message_type: MESSAGE_TYPE.SDP,
       content: offer,
     });
-  }
+  };
 
-//change video to unknoen person
+  //change video to unknoen person
   document
 
-  .getElementById("myVideo")
+    .getElementById("myVideo")
 
-  .addEventListener("click", function () {
-    videoChange(signaling);
-  });
+    .addEventListener("click", function () {
+      videoChange(signaling);
+    });
   //webrtc ends here
-
 }
-
 
 //end video chat
 function endVideoCall() {
@@ -272,7 +304,8 @@ function endVideoCall() {
   const customerMediaStream = customerViewCustomerVideo.srcObject;
   const customerMediaTracks = customerMediaStream.getTracks();
   //stop all tracks
-   customerMediaTracks.forEach((track) => track.stop());
+  customerMediaTracks.forEach((track) => track.stop());
+  window.location.reload()
 }
 
 // audio change
@@ -284,25 +317,27 @@ function audioChange() {
   ) {
     //mute mic
     document.getElementById("myMic").classList.add("customerViewInactive");
+    document.getElementById("myMic").classList.add("crossLine");
     document.getElementById("myMic").classList.remove("customerViewActive");
-   //remove audio track
-    customerMediaTracks.forEach(function(device) {
-    if(device.kind === 'audio'){
-      device.enabled = false;
-      device.muted = true;
-    }
+    //remove audio track
+    customerMediaTracks.forEach(function (device) {
+      if (device.kind === "audio") {
+        device.enabled = false;
+        device.muted = true;
+      }
     });
   } else {
     //un mute mic
     document.getElementById("myMic").classList.add("customerViewActive");
     document.getElementById("myMic").classList.remove("customerViewInactive");
-   //add audio track
-    customerMediaTracks.forEach(function(device) {
-      if(device.kind === 'audio'){
+    document.getElementById("myMic").classList.remove("crossLine");
+    //add audio track
+    customerMediaTracks.forEach(function (device) {
+      if (device.kind === "audio") {
         device.enabled = true;
         device.muted = false;
       }
-      });
+    });
   }
 }
 
@@ -310,19 +345,21 @@ function audioChange() {
 function videoChange(signaling) {
   const customerMediaStream = customerViewCustomerVideo.srcObject;
   const customerMediaTracks = customerMediaStream.getTracks();
-  
-  //send message to client
-  signaling.send(JSON.stringify({
-    message_type: 'CANDIDATE',
-    content: 'videoViewChange',
-  }));
 
+  //send message to client
+  signaling.send(
+    JSON.stringify({
+      message_type: "CANDIDATE",
+      content: "videoViewChange",
+    })
+  );
 
   if (
     document.getElementById("myVideo").classList.contains("customerViewActive")
   ) {
     //mute video
     document.getElementById("myVideo").classList.add("customerViewInactive");
+    document.getElementById("myVideo").classList.add("crossLine");
     document.getElementById("myVideo").classList.remove("customerViewActive");
     document.getElementById("customerViewCustomerVideoElement").style.display =
       "none";
@@ -330,30 +367,31 @@ function videoChange(signaling) {
     document.getElementById("imageElement").classList.remove("hideElement");
 
     //stop video track
-    customerMediaTracks.forEach(function(device) {
-      if(device.kind === 'video'){
+    customerMediaTracks.forEach(function (device) {
+      if (device.kind === "video") {
         device.enabled = false;
         device.muted = true;
       }
-      });
+    });
   } else {
     //un mute video
     document.getElementById("myVideo").classList.add("customerViewActive");
     document.getElementById("myVideo").classList.remove("customerViewInactive");
+    document.getElementById("myVideo").classList.remove("crossLine");
     document.getElementById("customerViewCustomerVideoElement").style.display =
       "";
     document.getElementById("imageElement").style.display = "none";
 
     //add video track
-    customerMediaTracks.forEach(function(device) {
-      if(device.kind === 'video'){
+    customerMediaTracks.forEach(function (device) {
+      if (device.kind === "video") {
         device.enabled = true;
         device.muted = false;
       }
-      });
+    });
   }
 
-//add name to unknown person image
-var x = localStorage.getItem("customerName");
-document.getElementById("customerName").innerHTML = x;
+  //add name to unknown person image
+  var x = localStorage.getItem("customerName");
+  document.getElementById("customerName").innerHTML = x;
 }
