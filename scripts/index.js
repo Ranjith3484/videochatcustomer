@@ -178,6 +178,11 @@ function goToVideoChat() {
       const video = document.getElementById("customerViewClientVideoElement");
       video.srcObject = event.streams[0];
       console.log("live streaming");
+          //send message for customer name
+    drone.publish({
+      room: "observable-room",
+      message: localStorage.getItem("customerName"),
+    });
     };
 
     pc.ondatachannel = (event) => {
