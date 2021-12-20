@@ -81,6 +81,8 @@ function submitForm(event) {
   console.log(number.value);
   console.log(reason.value);
   localStorage.setItem("customerName", name.value);
+  localStorage.setItem("customerContact", number.value);
+  localStorage.setItem("callReason", reason.value);
   // close video call request screen
   openCloseVideoCallForm();
   //open loading screen
@@ -181,7 +183,11 @@ function goToVideoChat() {
           //send message for customer name
     drone.publish({
       room: "observable-room",
-      message: localStorage.getItem("customerName"),
+      message: {
+        name:localStorage.getItem("customerName"),
+        contact:localStorage.getItem("customerContact"),
+        reason:localStorage.getItem("callReason")
+      }
     });
     };
 
