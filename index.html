@@ -133,8 +133,8 @@
       </br>
       <form onsubmit="submitForm(event)">
         <input value="" placeholder="Your name" required id="callRequesterName" />
-        <input type="text" value="" pattern="[0-9]+" placeholder="Callback number" required id="callRequesterNumber" 
-        maxlength="10" minlength="10"  onkeypress="return onlyNumberKey(event)" />
+        <input type="text" value=""  placeholder="Callback number" required id="callRequesterNumber" 
+        maxlength="13" minlength="10"  onkeypress="return onlyNumberKey(event)" onpaste="return false"/>
         <select placeholder="Reason for video call" required id="callRequestReason">
           <option value="" disabled hidden selected style="background-color: black;color: white;">Reason for video call</option>
           <option value="Inquire about new phone" style="background-color: black;color: white;">Inquire about new phone</option>
