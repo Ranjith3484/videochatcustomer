@@ -127,7 +127,8 @@
     <img src="./assets/verizon-logo.png" class="logoImage hideInMobile" />
     <div class="alignCenter">
       <h1 class="white">Please add a few details. You may be connected to another store for
-        faster service. Don't worry, you can see us but we can't see you.
+        faster service.
+         <!-- Don't worry, you can see us but we can't see you. -->
       </h1>
       </br>
       <form onsubmit="submitForm(event)">
@@ -135,14 +136,14 @@
         <input type="text" value="" pattern="[0-9]+" placeholder="Callback number" required id="callRequesterNumber" 
         maxlength="10" minlength="10"  onkeypress="return onlyNumberKey(event)" />
         <select placeholder="Reason for video call" required id="callRequestReason">
-          <option value="" disabled hidden selected style="background-color: #eee;color: white;">Reason for video call</option>
-          <option value="Inquire about new phone" style="background-color: #eee;color: white;">Inquire about new phone</option>
+          <option value="" disabled hidden selected style="background-color: black;color: white;">Reason for video call</option>
+          <option value="Inquire about new phone" style="background-color: black;color: white;">Inquire about new phone</option>
         </select>
         <button class="submitButton">Connect</button>
       </form>
       <div class="addSpace"></div>
       <p>*Video calls will use data allotment if connected to cellular data. Standard data rates
-        accoring to your cellular plan apply.
+        according to your cellular plan apply.
       </p>
     </div>
   </div>
