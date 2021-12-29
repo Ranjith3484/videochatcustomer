@@ -306,6 +306,7 @@ function endVideoCall() {
   window.location.reload();
 }
 
+//scale drone api for passing messages (audio/video - mute/unmute , customer info)
 const CLIENT_ID = "LT31hadz55oFVVvT";
 
 const drone = new ScaleDrone(CLIENT_ID, {
