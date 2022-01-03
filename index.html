@@ -126,14 +126,14 @@
   <div class="openVideoCallForm hideElement" id="openVideoCallForm">
     <img src="./assets/verizon-logo.png" class="logoImage hideInMobile" />
     <div class="alignCenter">
-      <h1 class="white">Please add a few details. You may be connected to another store for
-        faster service.
-         <!-- Don't worry, you can see us but we can't see you. -->
-      </h1>
+      <h1 class="white" style="font-size: 40px !important;margin-bottom: 10px !important;">Reach us here!</h1>
+      <h4 class="white">
+        Want to talk with us? We're always happy to listen. Here's how you can reach us
+      </h4>
       </br>
       <form onsubmit="submitForm(event)">
         <input value="" placeholder="Your name" required id="callRequesterName" />
-        <input type="text" value=""  placeholder="Callback number" required id="callRequesterNumber" 
+        <input type="text" value=""  placeholder="Contact number" required id="callRequesterNumber" 
         maxlength="13" minlength="10"  onkeypress="return onlyNumberKey(event)" onpaste="return false"/>
         <select placeholder="Reason for video call" required id="callRequestReason">
           <option value="" disabled hidden selected style="background-color: black;color: white;">Reason for video call</option>
